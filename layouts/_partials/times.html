@@ -1,0 +1,10 @@
+{{/* Converts front matter times to minutes. cook_increment may be "hours". */}}
+{{ $p := .Params }}
+{{ $prep := int ($p.prep_time | default 0) }}
+{{ $cook := int ($p.cook_time | default 0) }}
+
+{{ if eq $p.cook_increment "hours" }}
+  {{ $cook = mul $cook 60 }}
+{{ end }}
+
+{{ return dict "prep" $prep "cook" $cook "total" (add $prep $cook) }}

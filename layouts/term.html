@@ -1,0 +1,13 @@
+{{ define "main" }}
+<section class="hero hero-sm wrap">
+  <a class="back" href="{{ .Parent.RelPermalink }}">{{ partial "icon.html" "back" }}All categories</a>
+  <h1>{{ .Title }}</h1>
+  <p class="lead">{{ len .Pages }} {{ cond (eq (len .Pages) 1) "recipe" "recipes" }}</p>
+</section>
+
+<section class="wrap">
+  <div class="grid">
+    {{ range .Pages.ByDate.Reverse }}{{ partial "card.html" . }}{{ end }}
+  </div>
+</section>
+{{ end }}

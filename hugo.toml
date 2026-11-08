@@ -1,0 +1,36 @@
+baseURL = "https://cellsummer.github.io/cookbook/"
+languageCode = "en-us"
+title = "Xiaolin's Cookbook"
+enableRobotsTXT = true
+
+[params]
+description = "Home recipes from Xiaolin's kitchen."
+author = "Xiaolin Zhang"
+
+[taxonomies]
+tag = "tags"
+
+[outputs]
+home = ["HTML", "RSS"]
+page = ["HTML"]
+
+[markup.goldmark.renderer]
+unsafe = false
+
+[imaging]
+quality = 80
+resampleFilter = "Lanczos"
+
+# "More to cook" on recipe pages: same tags first, then recent.
+[related]
+includeNewer = true
+threshold = 0
+toLower = false
+
+[[related.indices]]
+name = "tags"
+weight = 100
+
+[[related.indices]]
+name = "date"
+weight = 10

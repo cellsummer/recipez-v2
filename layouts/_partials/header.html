@@ -1,0 +1,15 @@
+{{ $tags := site.GetPage "/tags" }}
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="{{ site.Title }} home">
+      <img src="{{ "favicon.svg" | relURL }}" alt="" width="32" height="32">
+      <span>{{ site.Title }}</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="{{ site.Home.RelPermalink }}" {{ if .IsHome }}aria-current="page"{{ end }}>Recipes</a>
+      {{ with $tags }}
+        <a href="{{ .RelPermalink }}" {{ if in (slice "taxonomy" "term") $.Kind }}aria-current="page"{{ end }}>Categories</a>
+      {{ end }}
+    </nav>
+  </div>
+</header>

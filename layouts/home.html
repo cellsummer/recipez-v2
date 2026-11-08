@@ -1,0 +1,30 @@
+{{ define "main" }}
+{{ $pages := site.RegularPages.ByDate.Reverse }}
+
+<section class="hero wrap">
+  <p class="kicker">家常菜谱 · Home kitchen</p>
+  <h1>{{ site.Title }}</h1>
+  <p class="lead">{{ site.Params.description }}</p>
+
+  <div class="search">
+    <label for="q" class="sr-only">Search recipes</label>
+    {{ partial "icon.html" "search" }}
+    <input id="q" type="search" placeholder="Search recipes or ingredients" autocomplete="off">
+  </div>
+</section>
+
+<section class="wrap" aria-label="Recipes">
+  <div class="filters" role="group" aria-label="Filter by category">
+    <button type="button" class="chip" data-tag="" aria-pressed="true">All <span>{{ len $pages }}</span></button>
+    {{ range site.Taxonomies.tags.ByCount }}
+      <button type="button" class="chip" data-tag="{{ .Page.Title }}" aria-pressed="false">{{ .Page.Title }} <span>{{ .Count }}</span></button>
+    {{ end }}
+  </div>
+
+  <div class="grid" id="recipes">
+    {{ range $pages }}{{ partial "card.html" . }}{{ end }}
+  </div>
+  <p class="empty" id="empty" hidden>No recipes match. Try another word or category.</p>
+  <p class="sr-only" id="status" aria-live="polite"></p>
+</section>
+{{ end }}

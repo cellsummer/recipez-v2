@@ -1,0 +1,14 @@
+{{/* Images under assets/ get resized and converted. Paths that only exist in static/ are served as-is, so old content still works. */}}
+{{ $out := dict }}
+
+{{ with .page.Params.recipe_image }}
+  {{ $path := . }}
+  {{ with resources.Get $path }}
+    {{ $img := (.Filter images.AutoOrient).Process $.spec }}
+    {{ $out = dict "src" $img.RelPermalink "w" $img.Width "h" $img.Height }}
+  {{ else }}
+    {{ $out = dict "src" ($path | relURL) }}
+  {{ end }}
+{{ end }}
+
+{{ return $out }}

@@ -1,0 +1,22 @@
+{{ define "main" }}
+<section class="hero hero-sm wrap">
+  <h1>{{ .Title }}</h1>
+  <p class="lead">Browse recipes by kind.</p>
+</section>
+
+<section class="wrap">
+  <div class="tiles">
+    {{ range .Data.Terms.ByCount }}
+      {{ $cover := index .Pages.ByDate.Reverse 0 }}
+      {{ $img := partial "img.html" (dict "page" $cover "spec" "fill 640x400 Smart webp q75") }}
+      <a class="tile" href="{{ .Page.RelPermalink }}">
+        {{ with $img.src }}<img src="{{ . }}" alt="" loading="lazy">{{ end }}
+        <span class="tile-label">
+          <strong>{{ .Page.Title }}</strong>
+          <span>{{ .Count }} {{ cond (eq .Count 1) "recipe" "recipes" }}</span>
+        </span>
+      </a>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

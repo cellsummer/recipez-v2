@@ -1,0 +1,74 @@
+{{ define "main" }}
+{{ $t := partial "times.html" . }}
+{{ $hero := partial "img.html" (dict "page" . "spec" "fit 1600x1200 webp q80") }}
+
+{{/* Each "## " heading in the markdown starts a section. The first section (Ingredients) goes to the sidebar; the rest form the main column. */}}
+{{ $chunks := split (string .Content) "<h2" }}
+{{ $intro := index $chunks 0 }}
+{{ $sections := slice }}
+{{ range after 1 $chunks }}{{ $sections = $sections | append (print "<h2" .) }}{{ end }}
+
+<article class="recipe">
+  <header class="recipe-head wrap">
+    <a class="back" href="{{ site.Home.RelPermalink }}">{{ partial "icon.html" "back" }}All recipes</a>
+
+    {{ with .GetTerms "tags" }}
+      <p class="tags">
+        {{ range . }}<a class="chip chip-sm" href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}
+      </p>
+    {{ end }}
+
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.tagline }}<p class="lead">{{ . }}</p>{{ end }}
+
+    <div class="byline">
+      <span>{{ .Params.author | default site.Params.author }} · <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2006" }}</time></span>
+      <button type="button" class="btn" data-print>{{ partial "icon.html" "printer" }}Print</button>
+    </div>
+  </header>
+
+  {{ with $hero.src }}
+    <figure class="recipe-hero wrap">
+      <img src="{{ . }}" {{ with $hero.w }}width="{{ . }}" height="{{ $hero.h }}"{{ end }} alt="{{ $.Title }}" fetchpriority="high">
+    </figure>
+  {{ end }}
+
+  <dl class="stats wrap">
+    {{ with $t.prep }}
+      <div>{{ partial "icon.html" "knife" }}<dt>Prep</dt><dd>{{ partial "duration.html" . }}</dd></div>
+    {{ end }}
+    {{ with $t.cook }}
+      <div>{{ partial "icon.html" (cond $.Params.cook "pot" "snow") }}<dt>{{ cond $.Params.cook "Cook" "Chill" }}</dt><dd>{{ partial "duration.html" . }}</dd></div>
+    {{ end }}
+    {{ with $t.total }}
+      <div>{{ partial "icon.html" "clock" }}<dt>Total</dt><dd>{{ partial "duration.html" . }}</dd></div>
+    {{ end }}
+    {{ with .Params.servings }}
+      <div>{{ partial "icon.html" "users" }}<dt>Serves</dt><dd>{{ . }}</dd></div>
+    {{ end }}
+    {{ with .Params.calories }}
+      <div>{{ partial "icon.html" "flame" }}<dt>Calories</dt><dd>{{ . }} kcal</dd></div>
+    {{ end }}
+  </dl>
+
+  <div class="recipe-body wrap {{ if ge (len $sections) 2 }}has-aside{{ end }}">
+    {{ with trim $intro " \n" }}<div class="prose intro">{{ . | safeHTML }}</div>{{ end }}
+
+    {{ if ge (len $sections) 2 }}
+      <aside class="prose panel">{{ index $sections 0 | safeHTML }}</aside>
+      <div class="prose steps">{{ delimit (after 1 $sections) "" | safeHTML }}</div>
+    {{ else }}
+      <div class="prose steps">{{ delimit $sections "" | safeHTML }}</div>
+    {{ end }}
+
+    <p class="progress-reset"><button type="button" class="btn btn-ghost" data-reset hidden>{{ partial "icon.html" "reset" }}Clear checked items</button></p>
+  </div>
+</article>
+
+{{ with first 3 (site.RegularPages.Related .) }}
+  <section class="more wrap" aria-labelledby="more-title">
+    <h2 id="more-title">More to cook</h2>
+    <div class="grid">{{ range . }}{{ partial "card.html" . }}{{ end }}</div>
+  </section>
+{{ end }}
+{{ end }}

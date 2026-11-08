@@ -1,0 +1,15 @@
+{{/* Formats a minute count as "1 h 25 min". */}}
+{{ $m := int . }}
+{{ $h := div $m 60 }}
+{{ $r := mod $m 60 }}
+{{ $out := "" }}
+
+{{ if and $h $r }}
+  {{ $out = printf "%d h %d min" $h $r }}
+{{ else if $h }}
+  {{ $out = printf "%d h" $h }}
+{{ else }}
+  {{ $out = printf "%d min" $r }}
+{{ end }}
+
+{{ return $out }}

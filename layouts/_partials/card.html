@@ -1,0 +1,24 @@
+{{ $t := partial "times.html" . }}
+{{ $img := partial "img.html" (dict "page" . "spec" "fill 720x540 Smart webp q78") }}
+{{ $search := delimit (slice .Title .Params.tagline (delimit (.Params.tags | default slice) " ") .Plain) " " | lower }}
+
+<article class="card" data-tags="{{ delimit (.Params.tags | default slice) "|" }}" data-search="{{ $search }}">
+  <a class="card-link" href="{{ .RelPermalink }}">
+    <div class="card-media">
+      {{ with $img.src }}
+        <img src="{{ . }}" {{ with $img.w }}width="{{ . }}" height="{{ $img.h }}"{{ end }} alt="" loading="lazy" decoding="async">
+      {{ end }}
+    </div>
+    <div class="card-body">
+      {{ with .Params.tags }}
+        <p class="card-tags">{{ delimit . " · " }}</p>
+      {{ end }}
+      <h3 class="card-title">{{ .Title }}</h3>
+      {{ with .Params.tagline }}<p class="card-text">{{ . }}</p>{{ end }}
+      <p class="card-meta">
+        {{ with $t.total }}<span>{{ partial "icon.html" "clock" }}{{ partial "duration.html" . }}</span>{{ end }}
+        {{ with .Params.servings }}<span>{{ partial "icon.html" "users" }}{{ . }} servings</span>{{ end }}
+      </p>
+    </div>
+  </a>
+</article>
