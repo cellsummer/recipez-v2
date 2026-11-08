@@ -10,6 +10,10 @@
       {{ with $tags }}
         <a href="{{ .RelPermalink }}" {{ if in (slice "taxonomy" "term") $.Kind }}aria-current="page"{{ end }}>Categories</a>
       {{ end }}
+      <button type="button" class="theme-toggle" data-theme-toggle hidden>
+        <span class="to-dark">{{ partial "icon.html" "moon" }}</span>
+        <span class="to-light">{{ partial "icon.html" "sun" }}</span>
+      </button>
     </nav>
   </div>
 </header>

@@ -1,46 +1,36 @@
-/* Tokens. Warm terracotta on cream; contrast checked for 4.5:1 text. */
+/* Tokens. Warm terracotta on cream; contrast checked for 4.5:1 text.
+   Each color is light-dark(light, dark). The theme toggle sets color-scheme
+   on <html>; without a choice, the system setting applies. */
 :root {
-  --bg: #FFFBF3;
-  --surface: #FFFFFF;
-  --surface-2: #F8F0E6;
-  --ink: #2A211C;
-  --muted: #6B5A4E;
-  --line: #EADFD2;
-  --primary: #9A3412;
-  --primary-ink: #FFFFFF;
-  --primary-soft: #FBE9DF;
-  --done: #047857;
+  color-scheme: light dark;
+
+  --bg: light-dark(#FFFBF3, #17120F);
+  --surface: light-dark(#FFFFFF, #221B17);
+  --surface-2: light-dark(#F8F0E6, #2B231E);
+  --ink: light-dark(#2A211C, #F4ECE3);
+  --muted: light-dark(#6B5A4E, #BFAE9F);
+  --line: light-dark(#EADFD2, #3A2F28);
+  --primary: light-dark(#9A3412, #F08A5D);
+  --primary-ink: light-dark(#FFFFFF, #1A110C);
+  --primary-soft: light-dark(#FBE9DF, #3A2219);
+  --done: light-dark(#047857, #34D399);
+  --shade-1: light-dark(rgb(42 33 28 / .07), rgb(0 0 0 / .4));
+  --shade-2: light-dark(rgb(42 33 28 / .2), rgb(0 0 0 / .65));
 
   --serif: "Playfair Display", "Noto Serif SC", "Songti SC", Georgia, serif;
   --sans: "Karla", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
 
   --radius: 16px;
   --radius-sm: 10px;
-  --shadow: 0 1px 2px rgb(42 33 28 / .06), 0 8px 24px -12px rgb(42 33 28 / .18);
-  --shadow-lift: 0 2px 4px rgb(42 33 28 / .08), 0 18px 36px -16px rgb(42 33 28 / .28);
+  --shadow: 0 1px 2px var(--shade-1), 0 8px 24px -12px var(--shade-2);
+  --shadow-lift: 0 2px 4px var(--shade-1), 0 18px 36px -16px var(--shade-2);
   --ease: cubic-bezier(.2, .7, .2, 1);
   --max: 1160px;
   --gutter: clamp(16px, 4vw, 32px);
-
-  color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #17120F;
-    --surface: #221B17;
-    --surface-2: #2B231E;
-    --ink: #F4ECE3;
-    --muted: #BFAE9F;
-    --line: #3A2F28;
-    --primary: #F08A5D;
-    --primary-ink: #1A110C;
-    --primary-soft: #3A2219;
-    --done: #34D399;
-    --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 8px 24px -12px rgb(0 0 0 / .6);
-    --shadow-lift: 0 2px 4px rgb(0 0 0 / .4), 0 18px 36px -16px rgb(0 0 0 / .7);
-  }
-}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 
 /* Base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -101,6 +91,18 @@ nav a {
 }
 nav a:hover { background: var(--surface-2); color: var(--ink); }
 nav a[aria-current="page"] { color: var(--ink); background: var(--surface-2); }
+
+.theme-toggle {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; margin-left: 4px;
+  color: var(--muted); background: none; border: 0; border-radius: 999px; cursor: pointer;
+  transition: background-color .15s var(--ease), color .15s var(--ease);
+}
+.theme-toggle:hover { background: var(--surface-2); color: var(--ink); }
+.theme-toggle[hidden] { display: none; }
+
+/* Show the icon of the theme a click switches to. */
+:root[data-theme="dark"] .theme-toggle .to-dark,
+:root[data-theme="light"] .theme-toggle .to-light { display: none; }
 
 /* Hero */
 .hero { padding-block: clamp(40px, 8vw, 88px) 28px; text-align: center; }
@@ -312,9 +314,9 @@ li.done { color: var(--muted); }
 
 /* Print: one clean page, no chrome */
 @media print {
-  :root { --bg: #fff; --surface: #fff; --ink: #000; --muted: #444; --line: #ccc; --primary: #000; --primary-soft: #eee; }
+  :root, :root[data-theme] { color-scheme: light; --bg: #fff; --surface: #fff; --ink: #000; --muted: #444; --line: #ccc; --primary: #000; --primary-soft: #eee; }
   body { font-size: 11pt; }
-  .site-header, .site-footer, .back, .byline .btn, .more, .progress-reset, .tags { display: none !important; }
+  .site-header, .site-footer, .theme-toggle, .back, .byline .btn, .more, .progress-reset, .tags { display: none !important; }
   .recipe-hero img { max-height: 3in; box-shadow: none; }
   .panel { box-shadow: none; position: static; }
   .recipe-body.has-aside { grid-template-columns: 2.4in 1fr; display: grid; }

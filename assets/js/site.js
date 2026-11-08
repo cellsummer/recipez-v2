@@ -1,4 +1,5 @@
 const STORE_PREFIX = "checked:";
+const THEME_KEY = "theme";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -91,10 +92,42 @@ function initChecklist() {
   reset.hidden = saved.length === 0;
 }
 
+// Theme: a saved choice wins; otherwise follow the system and its live changes.
+function initTheme() {
+  const btn = $("[data-theme-toggle]");
+  if (!btn) return;
+
+  const root = document.documentElement;
+  const system = matchMedia("(prefers-color-scheme: dark)");
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch {}
+
+  const apply = (theme) => {
+    root.dataset.theme = theme;
+    const next = theme === "dark" ? "light" : "dark";
+    btn.setAttribute("aria-label", `Switch to ${next} theme`);
+    btn.title = `Switch to ${next} theme`;
+  };
+
+  apply(saved || (system.matches ? "dark" : "light"));
+  btn.hidden = false;
+
+  system.addEventListener("change", (e) => {
+    if (!saved) apply(e.matches ? "dark" : "light");
+  });
+
+  btn.addEventListener("click", () => {
+    saved = root.dataset.theme === "dark" ? "light" : "dark";
+    apply(saved);
+    try { localStorage.setItem(THEME_KEY, saved); } catch {}
+  });
+}
+
 function initPrint() {
   $$("[data-print]").forEach((b) => b.addEventListener("click", () => window.print()));
 }
 
+initTheme();
 initFilter();
 initChecklist();
 initPrint();
